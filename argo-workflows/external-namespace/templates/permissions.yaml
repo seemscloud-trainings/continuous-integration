@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-workflows
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-workflows:workspace:serviceaccount:argo-workflows
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
+    verbs: [ "get", "watch", "list" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-workflows:workspace:serviceaccount:argo-workflows
+subjects:
+  - kind: ServiceAccount
+    name: argo-workflows
+    namespace: "{{ .Release.Namespace }}"
+roleRef:
+  kind: Role
+  name: argo-workflows:workspace:serviceaccount:argo-workflows
+  apiGroup: rbac.authorization.k8s.io

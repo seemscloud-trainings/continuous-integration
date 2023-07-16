@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: example
+spec:
+  artifactRepositoryRef:
+    configMap: argo-workflows-config
+    key: config
+  serviceAccountName: argo-workflows
+  entrypoint: entrypoint
+  ttlStrategy:
+    secondsAfterFailure: 5
+    secondsAfterCompletion: 5
+    secondsAfterSuccess: 5
+  templates:
+    - name: entrypoint
+      steps:
+        - - name: build01
+            template: build01
+        - - name: build02
+            template: build02
+        - - name: test
+            template: test
+    - name: build01
+      container:
+        name: build
+        image: alpine:3.17
+        command: [ "sh", "-c" ]
+        args:
+          - |
+            id
+            ls -lh
+            ls -lhd /app
+            pwd
+        workingDir: /app
+    - name: build02
+      container:
+        name: build
+        image: alpine:3.17
+        command: [ "sh", "-c" ]
+        args:
+          - |
+            id
+            ls -lh
+            ls -lhd /app
+            pwd
+        workingDir: /app
+    - name: test
+      container:
+        name: test
+        image: alpine:3.17
+        command: [ "sh", "-c" ]
+        args: [ "ls", "-lh" ]
+        workingDir: /app

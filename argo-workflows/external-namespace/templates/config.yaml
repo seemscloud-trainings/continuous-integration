@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argo-workflows-config
+data:
+  config: |
+    artifactRepository:
+      archiveLogs: true
+      s3:
+        accessKeySecret:
+          key: accessKey
+          name: argo-workflows-s3-creds
+        secretKeySecret:
+          key: secretKey
+          name: argo-workflows-s3-creds
+        bucket: user01
+        endpoint: argo-workflows-minio.argo-system:9000
+        insecure: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argo-workflows-s3-creds
+data:
+  accessKey: dXNlcjAx
+  secretKey: VXNlcjEyMyFAIw==
